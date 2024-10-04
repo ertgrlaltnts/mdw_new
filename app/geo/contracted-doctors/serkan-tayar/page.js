@@ -1,31 +1,21 @@
-import Layout from "@/components/layout/ar/Layout";
+import Layout from "@/components/layout/geo/Layout";
 import Link from "next/link";
 import axios from "axios";
 import Markdown from "markdown-to-jsx";
 
 export const metadata = {
-  title: "Mediwali Health Tourism | الأطباء المتعاقدون",
-  description: `تعرف على الأطباء الخبراء مع Mediwali. احصل على خدمات رعاية صحية احترافية من أمهر الأطباء في تركيا في مجالات التجميل وطب الأسنان والأورام وجراحة العظام والعديد من الفروع الأخرى. صحتك في أيدي أمينة.`,
+  title: "Mediwali Health Tourism | კონტრაქტი ექიმები",
+  description: `შეხვდით ექსპერტ ექიმებს მედივალთან ერთად. მიიღეთ პროფესიონალური ჯანდაცვის სერვისები თურქეთის ყველაზე კომპეტენტური ექიმებისგან ესთეტიკის, სტომატოლოგიის, ონკოლოგიის, ორთოპედიის და მრავალი სხვა ფილიალში. თქვენი ჯანმრთელობა უსაფრთხო ხელშია.`,
 };
 
-export async function generateStaticParams() {
-  // Örneğin, API'den tüm blog gönderilerinin ID'lerini alın
+async function getDoctorData() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/doctors?populate=deep`
   );
 
-  // Her post için id parametresini döndürün
-  return res.data.data.map((item) => ({
-    slug: item.attributes.ar.slug,
-  }));
-}
-
-async function getDoctorData(slug) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_IP}/api/doctors?populate=deep`
+  const temp = res.data.data.filter(
+    (item) => item.attributes.geo.slug === "serkan-tayar"
   );
-
-  const temp = res.data.data.filter((item) => item.attributes.ar.slug === slug);
 
   return temp;
 }
@@ -37,10 +27,8 @@ async function getGeneralData() {
   return res.data.data.attributes;
 }
 
-export default async function Home({ params }) {
-  const { slug } = params;
-
-  const doctor = await getDoctorData(slug);
+export default async function Home() {
+  const doctor = await getDoctorData();
   const general = await getGeneralData();
 
   if (!doctor[0]) {
@@ -66,7 +54,7 @@ export default async function Home({ params }) {
                       Oops! The page you are looking for does not exist. Please
                       return to the site’s homepage.
                     </p>
-                    <Link href="/ar" className="thm-btn error-page__btn">
+                    <Link href="/geo" className="thm-btn error-page__btn">
                       back to home
                     </Link>
                   </div>
@@ -85,7 +73,7 @@ export default async function Home({ params }) {
           data={general}
           headerStyle={1}
           footerStyle={1}
-          breadcrumbTitle={doctor[0].attributes.ar.name}
+          breadcrumbTitle={doctor[0].attributes.geo.name}
         >
           {/* Team Details Start */}
           <section className="team-details">
@@ -104,7 +92,7 @@ export default async function Home({ params }) {
                     <div className="team-details__top-img-box">
                       <div className="team-details__top-img">
                         <img
-                          src={`${process.env.NEXT_PUBLIC_IP}${doctor[0].attributes.ar.image.data.attributes.url}`}
+                          src={`${process.env.NEXT_PUBLIC_IP}${doctor[0].attributes.geo.image.data.attributes.url}`}
                           alt=""
                         />
                       </div>
@@ -114,30 +102,30 @@ export default async function Home({ params }) {
                   <div className="col-xl-5 col-lg-5">
                     <div className="team-details__top-right">
                       <p className="team-details__top-right-sub-title">
-                        {doctor[0].attributes.ar.job}{" "}
+                        {doctor[0].attributes.geo.job}{" "}
                       </p>
                       <h3 className="team-details__top-right-title">
-                        {doctor[0].attributes.ar.name}
+                        {doctor[0].attributes.geo.name}
                       </h3>
 
                       <ul className="team-details__top-points list-unstyled">
                         <li>
-                          <span>قسم:</span>
-                          <p>{doctor[0].attributes.ar.department}</p>
+                          <span>დეპარტამენტი:</span>
+                          <p>{doctor[0].attributes.geo.department}</p>
                         </li>
                         <li>
-                          <span>موقع:</span>
-                          <p>{doctor[0].attributes.ar.location}</p>
+                          <span>მდებარეობა:</span>
+                          <p>{doctor[0].attributes.geo.location}</p>
                         </li>
                         <li>
-                          <span>منظمة:</span>
-                          <p>{doctor[0].attributes.ar.hospital}</p>
+                          <span>ორგანიზაცია:</span>
+                          <p>{doctor[0].attributes.geo.hospital}</p>
                         </li>
                       </ul>
                       <div>
                         <img
                           style={{ width: 200, objectFit: "contain" }}
-                          src={`${process.env.NEXT_PUBLIC_IP}${doctor[0].attributes.ar.hospital_logo.data.attributes.url}`}
+                          src={`${process.env.NEXT_PUBLIC_IP}${doctor[0].attributes.geo.hospital_logo.data.attributes.url}`}
                         />
                       </div>
                     </div>
@@ -146,14 +134,16 @@ export default async function Home({ params }) {
               </div>
 
               <div className="portfolio-details__text-1">
-                <Markdown>{doctor[0].attributes.ar.description}</Markdown>
+                <Markdown>{doctor[0].attributes.geo.description}</Markdown>
               </div>
 
               <div className="doctors_photos">
                 <div className="row">
                   {doctor[0].attributes.photos.data.map((item, index) => (
                     <div key={index} className="col-xl-4 col-lg-4">
-                      <img src={`${process.env.NEXT_PUBLIC_IP}${item.attributes.url}`} />
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_IP}${item.attributes.url}`}
+                      />
                     </div>
                   ))}
                 </div>
@@ -164,14 +154,14 @@ export default async function Home({ params }) {
                   style={{ marginBottom: 20 }}
                   className="team-details__title-1"
                 >
-                  العلاجات التي يقدمها هذا الطبيب
+                  ამ ექიმის მიერ მოწოდებული მკურნალობა
                 </h3>
                 <div
                   style={{ paddingLeft: 0, paddingRight: 0 }}
                   className="container"
                 >
                   <div className="row">
-                    {doctor[0].attributes.ar.services.map((item, index) => (
+                    {doctor[0].attributes.geo.services.map((item, index) => (
                       <div key={index} className="col-xl-4 col-lg-4">
                         <div className="hospital_service_item">{item}</div>
                       </div>
@@ -186,7 +176,7 @@ export default async function Home({ params }) {
           <section className="cta-one cta-five">
             <div className="container">
               <div className="update_time">
-                {doctor[0].attributes.ar.update}
+                {doctor[0].attributes.geo.update}
               </div>
               <div className="cta-one__inner">
                 <div
@@ -196,17 +186,20 @@ export default async function Home({ params }) {
                       "url(../../assets/images/shapes/cta-three-bg-shape-2.png)",
                   }}
                 ></div>
-             <div className="cta-one__title-box">
-                <h3>
-                احصل على <span>العرض</span> الآن
-                </h3>
-                <p>اتصل بنا للحصول على معلومات حول عروضنا الخاصة لك..</p>
-              </div>
-              <div className="cta-one__btn-box">
-                <Link href="/ar/contact" className="cta-one__btn thm-btn">
-                احصل على عرض أسعارك المجاني الآن
-                </Link>
-              </div>
+                <div className="cta-one__title-box">
+                  <h3>
+                    მიიღეთ <span>შემოთავაზება</span> ახლავე
+                  </h3>
+                  <p>
+                    დაგვიკავშირდით, რომ მიიღოთ ინფორმაცია თქვენთვის სპეციალური
+                    შეთავაზებების შესახებ.
+                  </p>
+                </div>
+                <div className="cta-one__btn-box">
+                  <Link href="/geo/contact" className="cta-one__btn thm-btn">
+                    მიიღეთ უფასო შეთავაზება ახლავე
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
