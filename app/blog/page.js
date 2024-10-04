@@ -12,7 +12,9 @@ async function getBlogData() {
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  return res.data.data;
+  const temp = res.data.data.sort((a, b) => parseInt(a.attributes.sort) - parseInt(b.attributes.sort));
+
+  return temp;
 }
 
 async function getGeneralData() {
@@ -28,7 +30,12 @@ export default async function Home() {
 
   return (
     <>
-      <Layout data={general} headerStyle={1} footerStyle={1} breadcrumbTitle="Blog">
+      <Layout
+        data={general}
+        headerStyle={1}
+        footerStyle={1}
+        breadcrumbTitle="Blog"
+      >
         {/* Blog Page Start */}
         <section className="blog-page">
           <div className="container">

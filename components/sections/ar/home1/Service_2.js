@@ -1,7 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import Link from "next/link";
 
-export default function Home({data}) {
+export default function Home({ data }) {
   return (
     <>
       <section className="services-one">
@@ -25,14 +25,15 @@ export default function Home({data}) {
                   <div className="services-one__single">
                     <div className="services-one__title-box">
                       <h3 className="services-one__title">
-                        <Link href={item.link}>
-                          {item.name}
-                        </Link>
+                        <Link href={item.link}>{item.title}</Link>
                       </h3>
                     </div>
                     <div className="services-one__img-box">
                       <div className="services-one__img">
-                        <img src={`${process.env.NEXT_PUBLIC_IP}${item.image.data.attributes.url}`} alt="" />
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_IP}${item.image.data.attributes.url}`}
+                          alt=""
+                        />
                       </div>
                       <div className="services-one__icon">
                         <img
@@ -43,7 +44,7 @@ export default function Home({data}) {
                     </div>
                     <div className="services-one__read-more">
                       <Link href={item.link}>
-                      مراجعة العرض<span className="icon-next"></span>
+                        مراجعة العرض<span className="icon-next"></span>
                       </Link>
                     </div>
                   </div>

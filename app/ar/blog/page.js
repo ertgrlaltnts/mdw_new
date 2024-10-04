@@ -11,8 +11,10 @@ async function getBlogData() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
+  
+  const temp = res.data.data.sort((a, b) => parseInt(a.attributes.sort) - parseInt(b.attributes.sort));
 
-  return res.data.data;
+  return temp;
 }
 
 async function getGeneralData() {

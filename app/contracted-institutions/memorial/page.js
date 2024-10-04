@@ -211,7 +211,7 @@ export default async function Home() {
                   <p>Contact us to learn about our special offers for you.</p>
                 </div>
                 <div className="cta-one__btn-box">
-                  <Link href="contact" className="cta-one__btn thm-btn">
+                  <Link href="/contact" className="cta-one__btn thm-btn">
                     GET YOUR FREE QUOTE NOW
                   </Link>
                 </div>
