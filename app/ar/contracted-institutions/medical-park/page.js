@@ -36,7 +36,7 @@ async function getGeneralData() {
 }
 
 export default async function Home() {
-  const hospital = await getHospitalData(slug);
+  const hospital = await getHospitalData();
   const general = await getGeneralData();
 
   if (!hospital[0]) {

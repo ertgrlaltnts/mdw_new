@@ -16,7 +16,7 @@ export const metadata = {
   description: `Mediwali'nin iş ortaklığı yaptığı Türkiye'nin en prestijli hastane ve kliniklerini keşfedin. Güvenilir sağlık kuruluşları ile en iyi tedavi deneyimini sunuyoruz. Sağlığınızı uzman ellere emanet edin.`,
 };
 
-async function getHospitalData(slug) {
+async function getHospitalData() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/hospitals?populate=deep`
   );
