@@ -1,44 +1,33 @@
-import Layout from "@/components/layout/Layout";
+import Layout from "@/components/layout/tr/Layout";
 import Link from "next/link";
 import Markdown from "markdown-to-jsx";
-import Head from "next/head";
 import axios from "axios";
 
-export async function generateStaticParams() {
-  // Örneğin, API'den tüm blog gönderilerinin ID'lerini alın
+async function getBlogData() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  // Her post için id parametresini döndürün
-  return res.data.data.map((item) => ({
-    slug: item.attributes.en.slug,
-  }));
-}
-
-async function getBlogData(slug) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
+  const temp = res.data.data.filter(
+    (item) => item.attributes.tr.slug === "aesthetic-surgery-redefining-beauty"
   );
-
-  const temp = res.data.data.filter((item) => item.attributes.en.slug === slug);
 
   return temp;
 }
 
-export async function generateMetadata({ params }) {
-  const { slug } = params;
-
+export async function generateMetadata() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  const temp = res.data.data.filter((item) => item.attributes.en.slug === slug);
+  const temp = res.data.data.filter(
+    (item) => item.attributes.tr.slug === "aesthetic-surgery-redefining-beauty"
+  );
 
   if (temp[0]) {
     return {
-      title: `Mediwali Health Tourism | ${temp[0].attributes.en.title}`,
-      description: `${temp[0].attributes.en.meta_description}`,
+      title: `Mediwali Sağlık Turizmi| ${temp[0].attributes.tr.title}`,
+      description: `${temp[0].attributes.tr.meta_description}`,
     };
   }
 }
@@ -50,9 +39,8 @@ async function getGeneralData() {
   return res.data.data.attributes;
 }
 
-export default async function Home({ params }) {
-  const { slug } = params;
-  const blog = await getBlogData(slug);
+export default async function Home() {
+  const blog = await getBlogData();
   const general = await getGeneralData();
 
   if (!blog[0]) {
@@ -67,7 +55,7 @@ export default async function Home({ params }) {
                   <div className="error-page__inner">
                     <div className="error-page__img img-bounce">
                       <img
-                        src="../assets/images/resources/error-page-img-1.png"
+                        src="../../assets/images/resources/error-page-img-1.png"
                         alt=""
                       />
                     </div>
@@ -78,8 +66,8 @@ export default async function Home({ params }) {
                       Oops! The page you are looking for does not exist. Please
                       return to the site’s homepage.
                     </p>
-                    <Link href="/" className="thm-btn error-page__btn">
-                      back to home
+                    <Link href="/tr" className="thm-btn error-page__btn">
+                      Back To Home
                     </Link>
                   </div>
                 </div>
@@ -94,10 +82,10 @@ export default async function Home({ params }) {
     return (
       <>
         <Layout
-         data={general}
+          data={general}
           headerStyle={1}
           footerStyle={1}
-          breadcrumbTitle={blog[0].attributes.en.title}
+          breadcrumbTitle={blog[0].attributes.tr.title}
         >
           {/* Blog Details Start */}
           <section className="blog-details">
@@ -107,16 +95,16 @@ export default async function Home({ params }) {
                   <div className="blog-details__left">
                     <div className="blog-details__img-1">
                       <img
-                        src={`${process.env.NEXT_PUBLIC_IP}${blog[0].attributes.en.image.data.attributes.url}`}
+                        src={`${process.env.NEXT_PUBLIC_IP}${blog[0].attributes.tr.image.data.attributes.url}`}
                         alt=""
                       />
                     </div>
                     <div className="blog-details__content">
-                      <Markdown>{blog[0].attributes.en.description}</Markdown>
+                      <Markdown>{blog[0].attributes.tr.description}</Markdown>
                     </div>
 
                     <div style={{ marginTop: 50 }} className="blog-one__tag">
-                      {blog[0].attributes.en.words.map((item, index) => (
+                      {blog[0].attributes.tr.words.map((item, index) => (
                         <span key={index}>{item}</span>
                       ))}
                     </div>
@@ -128,24 +116,27 @@ export default async function Home({ params }) {
 
           <section className="cta-one cta-five">
             <div className="container">
-              <div className="update_time">{blog[0].attributes.en.update}</div>
+              <div className="update_time">{blog[0].attributes.tr.update}</div>
               <div className="cta-one__inner">
                 <div
                   className="cta-one__bg"
                   style={{
                     backgroundImage:
-                      "url(../assets/images/shapes/cta-three-bg-shape-2.png)",
+                      "url(../../assets/images/shapes/cta-three-bg-shape-2.png)",
                   }}
                 ></div>
                 <div className="cta-one__title-box">
                   <h3>
-                    Get an Instant <span>Quote</span> Right Now
+                    Hemen Şimdi <span>Teklif</span> Alın
                   </h3>
-                  <p>Contact us to learn about our special offers for you.</p>
+                  <p>
+                    Size özel tekliflerimiz hakkında bilgi almak için bizimle
+                    iletişime geçin.
+                  </p>
                 </div>
                 <div className="cta-one__btn-box">
-                  <Link href="/contact" className="cta-one__btn thm-btn">
-                    GET YOUR FREE QUOTE NOW
+                  <Link href="/tr/contact" className="cta-one__btn thm-btn">
+                    ÜCRETSİZ TEKLİFİNİZİ ŞİMDİ ALIN
                   </Link>
                 </div>
               </div>

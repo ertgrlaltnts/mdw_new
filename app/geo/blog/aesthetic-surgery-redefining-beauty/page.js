@@ -1,43 +1,33 @@
-import Layout from "@/components/layout/tr/Layout";
+import Layout from "@/components/layout/geo/Layout";
 import Link from "next/link";
 import Markdown from "markdown-to-jsx";
 import axios from "axios";
 
-export async function generateStaticParams() {
-  // Örneğin, API'den tüm blog gönderilerinin ID'lerini alın
+async function getBlogData() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  // Her post için id parametresini döndürün
-  return res.data.data.map((item) => ({
-    slug: item.attributes.tr.slug,
-  }));
-}
-
-async function getBlogData(slug) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
+  const temp = res.data.data.filter(
+    (item) => item.attributes.geo.slug === "aesthetic-surgery-redefining-beauty"
   );
-
-  const temp = res.data.data.filter((item) => item.attributes.tr.slug === slug);
 
   return temp;
 }
 
-export async function generateMetadata({ params }) {
-  const { slug } = params;
-
+export async function generateMetadata() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  const temp = res.data.data.filter((item) => item.attributes.tr.slug === slug);
+  const temp = res.data.data.filter(
+    (item) => item.attributes.geo.slug === "aesthetic-surgery-redefining-beauty"
+  );
 
   if (temp[0]) {
     return {
-      title: `Mediwali Sağlık Turizmi | ${temp[0].attributes.tr.title}`,
-      description: `${temp[0].attributes.tr.meta_description}`,
+      title: `Mediwali Health Tourism | ${temp[0].attributes.geo.title}`,
+      description: `${temp[0].attributes.geo.meta_description}`,
     };
   }
 }
@@ -49,9 +39,8 @@ async function getGeneralData() {
   return res.data.data.attributes;
 }
 
-export default async function Home({ params }) {
-  const { slug } = params;
-  const blog = await getBlogData(slug);
+export default async function Home() {
+  const blog = await getBlogData();
   const general = await getGeneralData();
 
   if (!blog[0]) {
@@ -77,7 +66,7 @@ export default async function Home({ params }) {
                       Oops! The page you are looking for does not exist. Please
                       return to the site’s homepage.
                     </p>
-                    <Link href="/tr" className="thm-btn error-page__btn">
+                    <Link href="/geo" className="thm-btn error-page__btn">
                       Ana Sayfaya Dön
                     </Link>
                   </div>
@@ -96,7 +85,7 @@ export default async function Home({ params }) {
           data={general}
           headerStyle={1}
           footerStyle={1}
-          breadcrumbTitle={blog[0].attributes.tr.title}
+          breadcrumbTitle={blog[0].attributes.geo.title}
         >
           {/* Blog Details Start */}
           <section className="blog-details">
@@ -106,16 +95,16 @@ export default async function Home({ params }) {
                   <div className="blog-details__left">
                     <div className="blog-details__img-1">
                       <img
-                        src={`${process.env.NEXT_PUBLIC_IP}${blog[0].attributes.tr.image.data.attributes.url}`}
+                        src={`${process.env.NEXT_PUBLIC_IP}${blog[0].attributes.geo.image.data.attributes.url}`}
                         alt=""
                       />
                     </div>
                     <div className="blog-details__content">
-                      <Markdown>{blog[0].attributes.tr.description}</Markdown>
+                      <Markdown>{blog[0].attributes.geo.description}</Markdown>
                     </div>
 
                     <div style={{ marginTop: 50 }} className="blog-one__tag">
-                      {blog[0].attributes.tr.words.map((item, index) => (
+                      {blog[0].attributes.geo.words.map((item, index) => (
                         <span key={index}>{item}</span>
                       ))}
                     </div>
@@ -127,7 +116,7 @@ export default async function Home({ params }) {
 
           <section className="cta-one cta-five">
             <div className="container">
-              <div className="update_time">{blog[0].attributes.tr.update}</div>
+              <div className="update_time">{blog[0].attributes.geo.update}</div>
               <div className="cta-one__inner">
                 <div
                   className="cta-one__bg"
@@ -138,16 +127,16 @@ export default async function Home({ params }) {
                 ></div>
                 <div className="cta-one__title-box">
                   <h3>
-                    Hemen Şimdi <span>Teklif</span> Alın
+                    მიიღეთ <span>შემოთავაზება</span> ახლავე
                   </h3>
                   <p>
-                    Size özel tekliflerimiz hakkında bilgi almak için bizimle
-                    iletişime geçin.
+                    დაგვიკავშირდით, რომ მიიღოთ ინფორმაცია თქვენთვის სპეციალური
+                    შეთავაზებების შესახებ.
                   </p>
                 </div>
                 <div className="cta-one__btn-box">
-                  <Link href="/tr/contact" className="cta-one__btn thm-btn">
-                    ÜCRETSİZ TEKLİFİNİZİ ŞİMDİ ALIN
+                  <Link href="/geo/contact" className="cta-one__btn thm-btn">
+                    მიიღეთ უფასო შეთავაზება ახლავე
                   </Link>
                 </div>
               </div>

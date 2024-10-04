@@ -3,40 +3,30 @@ import Link from "next/link";
 import Markdown from "markdown-to-jsx";
 import axios from "axios";
 
-export async function generateStaticParams() {
-  // Örneğin, API'den tüm blog gönderilerinin ID'lerini alın
+async function getBlogData() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  // Her post için id parametresini döndürün
-  return res.data.data.map((item) => ({
-    slug: item.attributes.geo.slug,
-  }));
-}
-
-async function getBlogData(slug) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
+  const temp = res.data.data.filter(
+    (item) => item.attributes.geo.slug === "what-is-health-tourism-the-rise-of-a-global-trend"
   );
-
-  const temp = res.data.data.filter((item) => item.attributes.geo.slug === slug);
 
   return temp;
 }
 
-export async function generateMetadata({ params }) {
-  const { slug } = params;
-
+export async function generateMetadata() {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_IP}/api/blogs?populate=deep`
   );
 
-  const temp = res.data.data.filter((item) => item.attributes.geo.slug === slug);
+  const temp = res.data.data.filter(
+    (item) => item.attributes.geo.slug === "what-is-health-tourism-the-rise-of-a-global-trend"
+  );
 
   if (temp[0]) {
     return {
-      title: `Mediwali Sağlık Turizmi | ${temp[0].attributes.geo.title}`,
+      title: `Mediwali Health Tourism | ${temp[0].attributes.geo.title}`,
       description: `${temp[0].attributes.geo.meta_description}`,
     };
   }
@@ -49,9 +39,8 @@ async function getGeneralData() {
   return res.data.data.attributes;
 }
 
-export default async function Home({ params }) {
-  const { slug } = params;
-  const blog = await getBlogData(slug);
+export default async function Home() {
+  const blog = await getBlogData();
   const general = await getGeneralData();
 
   if (!blog[0]) {
@@ -136,17 +125,20 @@ export default async function Home({ params }) {
                       "url(../../assets/images/shapes/cta-three-bg-shape-2.png)",
                   }}
                 ></div>
-              <div className="cta-one__title-box">
-                <h3>
-                მიიღეთ <span>შემოთავაზება</span> ახლავე
-                </h3>
-                <p>დაგვიკავშირდით, რომ მიიღოთ ინფორმაცია თქვენთვის სპეციალური შეთავაზებების შესახებ.</p>
-              </div>
-              <div className="cta-one__btn-box">
-                <Link href="/geo/contact" className="cta-one__btn thm-btn">
-                მიიღეთ უფასო შეთავაზება ახლავე
-                </Link>
-              </div>
+                <div className="cta-one__title-box">
+                  <h3>
+                    მიიღეთ <span>შემოთავაზება</span> ახლავე
+                  </h3>
+                  <p>
+                    დაგვიკავშირდით, რომ მიიღოთ ინფორმაცია თქვენთვის სპეციალური
+                    შეთავაზებების შესახებ.
+                  </p>
+                </div>
+                <div className="cta-one__btn-box">
+                  <Link href="/geo/contact" className="cta-one__btn thm-btn">
+                    მიიღეთ უფასო შეთავაზება ახლავე
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
